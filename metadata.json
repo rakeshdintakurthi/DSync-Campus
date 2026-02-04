@@ -1,0 +1,5 @@
+{
+  "name": "Data Science Student Hub",
+  "description": "A comprehensive utility app for Data Science students to manage attendance, view timetables, and access study resources.",
+  "requestFramePermissions": []
+}
