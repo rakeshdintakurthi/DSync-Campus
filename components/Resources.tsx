@@ -1,13 +1,171 @@
-
 import React, { useState } from 'react';
 import { ResourceCategory, Subject } from '../types';
 import { THEORY_SUBJECTS, LAB_SUBJECTS } from '../constants';
-import { DBMS_LAB_EXPERIMENTS, Experiment } from '../data/dbmsLabContent';
+import { DBMS_LAB_EXPERIMENTS } from '../data/dbmsLabContent';
 import { EDA_LAB_EXPERIMENTS } from '../data/edaLabContent';
-import { DE_THEORY_CONTENT, TheoryUnit } from '../data/deTheoryContent';
+import { DE_THEORY_CONTENT } from '../data/deTheoryContent';
 import { DBMS_THEORY_CONTENT } from '../data/dbmsTheoryContent';
 import { DLCO_THEORY_CONTENT } from '../data/dlcoTheoryContent';
-import { DTI_THEORY_CONTENT } from '../data/dtiTheoryContent';
+import { DTI_THEORY_CONTENT, PageContent } from '../data/dtiTheoryContent';
+
+const ElementsFlowchart = () => (
+  <div className="my-10 flex flex-row items-stretch justify-center font-bold relative min-h-[400px]">
+    <div className="bg-[#0f2d4e] text-white px-2 py-8 flex items-center justify-center w-12 rounded-sm shadow-md">
+      <span className="[writing-mode:vertical-lr] rotate-180 uppercase text-xs tracking-[0.2em] font-black">
+        Key elements of Design
+      </span>
+    </div>
+    <div className="relative flex flex-col justify-around py-4">
+      {['point(dot)', 'Line', 'shape', 'Form', 'colour', 'Texture', 'Value', 'space'].map((item) => (
+        <div key={item} className="flex items-center">
+          <div className="w-4 h-[2px] bg-orange-400"></div>
+          <div className="bg-[#f28e40] text-white w-48 py-2 px-4 text-center shadow-sm text-sm font-bold ml-0 mb-1">
+            {item}
+          </div>
+        </div>
+      ))}
+      <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-orange-400"></div>
+    </div>
+  </div>
+);
+
+const DocumentPage: React.FC<{ page: PageContent; subject: Subject }> = ({ page, subject }) => {
+  return (
+    <div className="mx-auto w-full max-w-[850px] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm min-h-[1100px] flex flex-col relative border border-slate-200 mb-12 select-text">
+      <div className="px-12 pt-10 pb-4 flex justify-between items-center text-[10px] font-black tracking-widest text-slate-800 uppercase">
+        <div className="border-b border-slate-200 pb-1">DATA SCIENCE • {subject.name}</div>
+        <div className="border-b border-slate-200 pb-1">PAGE {page.pageNumber}</div>
+      </div>
+
+      <div className="px-16 sm:px-24 pb-24 flex-1">
+        <div className="space-y-6 mt-4">
+          {page.elements.map((el, i) => {
+            switch (el.type) {
+              case 'title':
+                return (
+                  <h1 key={i} className="text-2xl font-black text-slate-900 text-center uppercase tracking-tight py-4">
+                    {el.content}
+                  </h1>
+                );
+              case 'sub-header':
+                return (
+                  <div key={i} className="mb-4">
+                    <span className="font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 text-[15px]">
+                      {el.content}
+                    </span>
+                  </div>
+                );
+              case 'text':
+                return (
+                  <p key={i} className={`text-slate-800 leading-relaxed text-[15px] whitespace-pre-wrap ${el.highlighted ? 'bg-[#4ade80] px-1' : ''}`}>
+                    {el.content}
+                  </p>
+                );
+              case 'unit-header':
+                return (
+                  <div key={i} className="bg-[#4ade80] text-slate-900 px-6 py-4 font-black text-xl shadow-sm border-l-[12px] border-[#22c55e] my-4">
+                    {el.content}
+                  </div>
+                );
+              case 'section-box':
+                const boxColor = el.color === 'orange' ? 'bg-[#f4a261]' : el.color === 'gray' ? 'bg-slate-300' : 'bg-[#4ade80]';
+                return (
+                  <div key={i} className={`${boxColor} text-slate-900 px-4 py-1.5 font-black inline-block shadow-sm mt-8 uppercase text-[13px] tracking-wider`}>
+                    {el.content}
+                  </div>
+                );
+              case 'bullets':
+                return (
+                  <ul key={i} className="space-y-3 mt-4">
+                    {(el.content as string[]).map((bullet, bi) => (
+                      <li key={bi} className="flex gap-4 text-slate-800 text-[14px] leading-relaxed">
+                        <span className="text-slate-900 mt-0.5 font-bold">→</span>
+                        <span className="whitespace-pre-wrap">{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                );
+              case 'diagram':
+                if (el.content === 'flowchart-elements') return <ElementsFlowchart key={i} />;
+                return <div key={i} className="my-10 p-16 bg-slate-50 border border-dashed border-slate-200 text-center text-slate-400 text-xs uppercase font-bold">[ Diagram: {el.content} ]</div>;
+              case 'table':
+                return (
+                  <div key={i} className="my-6 border rounded-sm overflow-hidden border-slate-200">
+                    <table className="w-full text-[14px]">
+                      <tbody className="divide-y divide-slate-100">
+                        {el.content.rows.map((row: string[], ri: number) => (
+                          <tr key={ri} className="bg-white">
+                            <td className="w-40 font-black text-slate-900 p-4 bg-slate-50/50 border-r border-slate-100 align-top">{row[0]}</td>
+                            <td className="p-4 text-slate-700 leading-relaxed">
+                              {row[1]}
+                              {row[2] && <div className="mt-2 text-xs italic text-slate-500">{row[2]}</div>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              case 'image-placeholder':
+                return (
+                  <div key={i} className="my-8 p-12 bg-slate-50 border-2 border-dashed border-slate-200 rounded-sm flex flex-col items-center justify-center text-center">
+                    <svg className="w-8 h-8 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Illustration Segment</p>
+                    <p className="text-xs text-slate-500 italic max-w-sm">{el.content}</p>
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })}
+        </div>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100/30"></div>
+    </div>
+  );
+};
+
+const DocumentViewer: React.FC<{ 
+  item: any; 
+  subject: Subject;
+  onBack: () => void;
+}> = ({ item, subject, onBack }) => {
+  const isDTI = subject.id === 'dti';
+  const pages = isDTI ? (item.pages || []) : [{ pageNumber: 1, elements: [{ type: 'unit-header', content: item.title }, { type: 'text', content: 'Legacy format loading...' }] }];
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-[#ced4da] flex flex-col animate-in fade-in duration-300 overflow-hidden">
+      <header className="bg-[#1e293b] text-white h-14 flex items-center justify-between px-6 shadow-xl z-30 flex-shrink-0">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-lg transition-all text-white/80">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-red-500 rounded flex items-center justify-center text-[10px] font-black">DOC</div>
+            <h1 className="text-xs font-black uppercase tracking-widest truncate max-w-[150px] sm:max-w-md">{item.title}</h1>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="bg-slate-700/50 px-3 py-1 rounded text-[10px] font-bold text-slate-300 hidden sm:block">
+            {pages.length} PAGES RECONSTRUCTED
+          </div>
+          <button className="bg-blue-600 hover:bg-blue-500 px-4 py-1.5 rounded text-[10px] font-black transition-all shadow-lg uppercase tracking-wider">Save Offline</button>
+        </div>
+      </header>
+
+      <div className="flex-1 overflow-y-auto p-4 sm:p-10 hide-scrollbar scroll-smooth">
+        <div className="flex flex-col items-center">
+          {pages.map((page: any, idx: number) => (
+            <DocumentPage key={idx} page={page} subject={subject} />
+          ))}
+          <div className="py-20 text-center opacity-40 select-none">
+            <p className="text-slate-900 text-[10px] font-black uppercase tracking-[0.8em]">End of Digital Handout</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Resources: React.FC = () => {
   const categories: { label: ResourceCategory; icon: string; color: string }[] = [
@@ -20,123 +178,18 @@ const Resources: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<ResourceCategory | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
-  const [selectedItem, setSelectedItem] = useState<Experiment | TheoryUnit | null>(null);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
-  const handleBackToCategories = () => {
-    setSelectedCategory(null);
-    setSelectedSubject(null);
-    setSelectedItem(null);
-  };
+  const handleBackToCategories = () => { setSelectedCategory(null); setSelectedSubject(null); setSelectedItem(null); };
+  const handleBackToSubjects = () => { setSelectedSubject(null); setSelectedItem(null); };
+  const handleBackToItems = () => { setSelectedItem(null); };
 
-  const handleBackToSubjects = () => {
-    setSelectedSubject(null);
-    setSelectedItem(null);
-  };
-
-  const handleBackToItems = () => {
-    setSelectedItem(null);
-  };
-
-  // 3rd Level: Detailed Content View (Theory or Lab)
-  if (selectedItem) {
-    const isTheory = 'sections' in selectedItem;
-
-    return (
-      <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-        <header className="flex items-center gap-4">
-          <button 
-            onClick={handleBackToItems}
-            className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-90"
-          >
-            <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          </button>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold text-slate-900 leading-tight">{selectedItem.title}</h1>
-            <p className="text-xs text-slate-500 mt-0.5">{selectedSubject?.name}</p>
-          </div>
-        </header>
-
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-8">
-          {isTheory ? (
-            <div className="space-y-8">
-              {(selectedItem as TheoryUnit).sections.map((sec, i) => (
-                <div key={i} className="space-y-4">
-                  {sec.heading && (
-                    <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-2">{sec.heading}</h2>
-                  )}
-                  {sec.type === 'text' && (
-                    <p className="text-slate-700 leading-relaxed">{sec.content}</p>
-                  )}
-                  {sec.type === 'bullets' && Array.isArray(sec.content) && (
-                    <ul className="space-y-3">
-                      {sec.content.map((bullet, bi) => (
-                        <li key={bi} className="flex gap-3 text-slate-700 leading-relaxed">
-                          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {sec.type === 'table' && sec.tableData && (
-                    <div className="overflow-x-auto rounded-2xl border border-slate-100">
-                      <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50 text-slate-500 font-bold">
-                          <tr>
-                            {sec.tableData.headers.map((h, hi) => (
-                              <th key={hi} className="px-4 py-3">{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {sec.tableData.rows.map((row, ri) => (
-                            <tr key={ri}>
-                              {row.map((cell, ci) => (
-                                <td key={ci} className="px-4 py-3 text-slate-600">{cell}</td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <>
-              <div>
-                <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Objective</h2>
-                <p className="text-slate-700 leading-relaxed font-medium">{(selectedItem as Experiment).description}</p>
-              </div>
-              <div className="space-y-8">
-                {(selectedItem as Experiment).content.map((block, i) => (
-                  <div key={i} className="space-y-3">
-                    {block.subtitle && (
-                      <h3 className="text-md font-bold text-slate-800 flex items-center gap-2">
-                        <span className="w-1.5 h-4 bg-blue-500 rounded-full"></span>
-                        {block.subtitle}
-                      </h3>
-                    )}
-                    {block.sql && (
-                      <div className="relative group">
-                        <pre className="bg-slate-900 text-blue-300 p-5 rounded-2xl overflow-x-auto text-sm font-mono leading-relaxed shadow-inner">
-                          <code>{block.sql}</code>
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
+  if (selectedItem && selectedSubject) {
+    return <DocumentViewer item={selectedItem} subject={selectedSubject} onBack={handleBackToItems} />;
   }
 
-  // 2nd Level: Topic/Experiment List
   if (selectedSubject) {
-    let items: (Experiment | TheoryUnit)[] = [];
+    let items: any[] = [];
     if (selectedSubject.id === 'dbms-lab') items = DBMS_LAB_EXPERIMENTS;
     if (selectedSubject.id === 'eda-lab') items = EDA_LAB_EXPERIMENTS;
     if (selectedSubject.id === 'de') items = DE_THEORY_CONTENT;
@@ -147,10 +200,7 @@ const Resources: React.FC = () => {
     return (
       <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
         <header className="flex items-center gap-4">
-          <button 
-            onClick={handleBackToSubjects}
-            className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-90"
-          >
+          <button onClick={handleBackToSubjects} className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
             <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           </button>
           <div>
@@ -159,43 +209,26 @@ const Resources: React.FC = () => {
           </div>
         </header>
 
-        {items.length > 0 ? (
-          <div className="grid grid-cols-1 gap-3">
-            {items.map((item) => (
-              <div 
-                key={item.id} 
-                onClick={() => setSelectedItem(item)}
-                className="flex flex-col p-5 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md cursor-pointer transition-all group"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-slate-800 text-lg group-hover:text-blue-600 transition-colors">{item.title}</h3>
-                  <div className="p-2 bg-blue-50 text-blue-600 rounded-xl group-hover:scale-110 transition-transform">
-                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                  </div>
+        <div className="grid grid-cols-1 gap-3">
+          {items.map((item) => (
+            <div key={item.id} onClick={() => setSelectedItem(item)} className="flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md cursor-pointer transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 flex items-center justify-center bg-red-50 text-red-600 rounded-2xl group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                 </div>
-                <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">
-                  {'description' in item ? item.description : 'Explore structured study materials for this unit.'}
-                </p>
-                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider">
-                  Open Document
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                <div>
+                  <h3 className="font-bold text-slate-800 text-lg group-hover:text-blue-600 transition-colors">{item.title}</h3>
+                  <p className="text-xs text-slate-400 uppercase font-bold tracking-wider">High Fidelity Digital Copy</p>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-20 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-             <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
-             </div>
-             <p className="text-slate-500 font-medium italic">No notes uploaded yet for this subject.</p>
-          </div>
-        )}
+              <svg className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
 
-  // 1st Level: Subject List
   if (selectedCategory) {
     const isLabCategory = selectedCategory === 'Laboratory Notes';
     const subjectsToDisplay = isLabCategory ? LAB_SUBJECTS : THEORY_SUBJECTS;
@@ -203,90 +236,42 @@ const Resources: React.FC = () => {
     return (
       <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
         <header className="flex items-center gap-4">
-          <button 
-            onClick={handleBackToCategories}
-            className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-90"
-          >
+          <button onClick={handleBackToCategories} className="p-3 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
             <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           </button>
           <div>
             <h1 className="text-xl font-bold text-slate-900">{selectedCategory}</h1>
-            <p className="text-sm text-slate-500">Browse folders by subject</p>
+            <p className="text-sm text-slate-500">Academic Vault</p>
           </div>
         </header>
 
         <div className="grid grid-cols-1 gap-3">
-          {subjectsToDisplay.map((sub) => {
-             let fileCount = 0;
-             if (sub.id === 'dbms-lab') fileCount = DBMS_LAB_EXPERIMENTS.length;
-             if (sub.id === 'eda-lab') fileCount = EDA_LAB_EXPERIMENTS.length;
-             if (sub.id === 'de') fileCount = DE_THEORY_CONTENT.length;
-             if (sub.id === 'dbms') fileCount = DBMS_THEORY_CONTENT.length;
-             if (sub.id === 'dlco') fileCount = DLCO_THEORY_CONTENT.length;
-             if (sub.id === 'dti') fileCount = DTI_THEORY_CONTENT.length;
-
-             return (
-               <div 
-                 key={sub.id} 
-                 onClick={() => setSelectedSubject(sub)}
-                 className="flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md cursor-pointer transition-all group"
-               >
-                 <div className="flex items-center gap-4">
-                   <div className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-2xl group-hover:bg-blue-50 transition-colors">
-                     <svg className="w-6 h-6 text-slate-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
-                   </div>
-                   <div>
-                     <h3 className="font-bold text-slate-800">{sub.name}</h3>
-                     <p className="text-xs text-slate-400">
-                       {fileCount} {fileCount === 1 ? 'Topic' : 'Topics'} available
-                     </p>
-                   </div>
-                 </div>
-                 <svg className="w-5 h-5 text-slate-300 group-hover:text-blue-500 translate-x-0 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-               </div>
-             );
-          })}
+          {subjectsToDisplay.map((sub) => (
+            <div key={sub.id} onClick={() => setSelectedSubject(sub)} className="flex items-center justify-between p-5 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md cursor-pointer transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 flex items-center justify-center bg-slate-50 rounded-2xl group-hover:bg-blue-50 transition-colors">
+                  <svg className="w-6 h-6 text-slate-400 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                </div>
+                <div><h3 className="font-bold text-slate-800">{sub.name}</h3></div>
+              </div>
+              <svg className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+            </div>
+          ))}
         </div>
       </div>
     );
   }
 
-  // Home: Category Selection
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold text-slate-900">Study Resources</h1>
-        <p className="text-slate-500">Access notes, papers, and assignments</p>
-      </header>
-
+      <header><h1 className="text-2xl font-bold text-slate-900">Study Vault</h1><p className="text-slate-500">Access your 44-page Design Thinking guide and more</p></header>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {categories.map((cat) => (
-          <button
-            key={cat.label}
-            onClick={() => setSelectedCategory(cat.label)}
-            className="flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all text-left active:scale-[0.98]"
-          >
-            <div className={`w-14 h-14 flex items-center justify-center text-2xl rounded-2xl ${cat.color} shadow-sm`}>
-              {cat.icon}
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-slate-800">{cat.label}</h3>
-              <p className="text-sm text-slate-400">Click to explore subjects</p>
-            </div>
+          <button key={cat.label} onClick={() => setSelectedCategory(cat.label)} className="flex items-center gap-5 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all text-left">
+            <div className={`w-14 h-14 flex items-center justify-center text-2xl rounded-2xl ${cat.color} shadow-sm`}>{cat.icon}</div>
+            <div className="flex-1"><h3 className="text-lg font-bold text-slate-800">{cat.label}</h3><p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Open Folder</p></div>
           </button>
         ))}
-      </div>
-
-      <div className="p-6 bg-blue-600 rounded-3xl text-white relative overflow-hidden mt-8">
-        <div className="relative z-10">
-          <h3 className="text-xl font-bold mb-2">Need Help?</h3>
-          <p className="text-blue-100 text-sm opacity-90 leading-relaxed mb-4">Can't find a specific document? Contact the class representative or department office.</p>
-          <button className="bg-white text-blue-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-50 transition-colors shadow-lg shadow-blue-800/20">
-            Contact Support
-          </button>
-        </div>
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12 blur-xl"></div>
       </div>
     </div>
   );
