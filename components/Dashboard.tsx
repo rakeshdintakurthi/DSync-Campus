@@ -13,113 +13,86 @@ const Dashboard: React.FC<DashboardProps> = ({ user, setActiveTab }) => {
   const todaySchedule = TIMETABLES[user.section].find((t) => t.day === today);
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-12">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Welcome, {user.rollNumber}!</h1>
-          <p className="text-slate-500">Section {user.section} • Data Science Department</p>
+          <h1 className="text-5xl font-black text-slate-900 tracking-tight leading-tight">
+            Greetings,<br/><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">{user.rollNumber}</span>
+          </h1>
+          <p className="text-slate-500 font-semibold text-xl mt-3">Welcome to the Data Science Intelligence Hub.</p>
         </div>
-        <div className="text-right hidden md:block">
-          <p className="text-lg font-semibold text-slate-700">{today}</p>
-          <p className="text-sm text-slate-400">{new Date().toLocaleDateString()}</p>
+        <div className="bg-white/70 backdrop-blur-md px-8 py-4 rounded-[2rem] border border-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] hidden md:block">
+          <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-1">{today}</p>
+          <p className="text-lg font-black text-slate-800">{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}</p>
         </div>
       </header>
 
-      {/* Stats Quick View */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div 
           onClick={() => setActiveTab('attendance')}
-          className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition-shadow group"
+          className="bg-white p-10 rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100/50 cursor-pointer hover:shadow-2xl hover:shadow-blue-500/10 transition-all group relative overflow-hidden"
         >
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="font-semibold text-slate-700">Attendance status</h3>
-            <span className="p-2 bg-green-50 text-green-600 rounded-xl group-hover:scale-110 transition-transform">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-            </span>
+          <div className="absolute -top-10 -right-10 w-48 h-48 bg-blue-50 rounded-full opacity-50 transition-transform group-hover:scale-110"></div>
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-8">
+              <span className="p-4 bg-blue-50 text-blue-600 rounded-3xl group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              </span>
+              <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50/50 px-4 py-1 rounded-full">Active Record</span>
+            </div>
+            <div className="flex items-baseline gap-4">
+              <span className="text-6xl font-black text-slate-900">75%</span>
+              <span className="text-sm text-green-500 font-black uppercase tracking-widest">In Range</span>
+            </div>
+            <p className="text-xs text-slate-400 mt-6 font-bold uppercase tracking-widest">Examination Status: Eligible</p>
           </div>
-          <div className="flex items-end gap-2">
-            <span className="text-3xl font-bold text-slate-900">75%</span>
-            <span className="text-sm text-green-600 font-medium mb-1">Eligible</span>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">Required: 75% • Keep it up!</p>
         </div>
 
         <div 
           onClick={() => setActiveTab('timetable')}
-          className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition-shadow group"
+          className="bg-white p-10 rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-slate-100/50 cursor-pointer hover:shadow-2xl hover:shadow-indigo-500/10 transition-all group relative overflow-hidden"
         >
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="font-semibold text-slate-700">Next Class</h3>
-            <span className="p-2 bg-blue-50 text-blue-600 rounded-xl group-hover:scale-110 transition-transform">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </span>
-          </div>
-          {todaySchedule ? (
-            <div>
-              <p className="text-xl font-bold text-slate-900 truncate">{todaySchedule.slots[0].subject}</p>
-              <p className="text-sm text-slate-500">{todaySchedule.slots[0].time}</p>
+          <div className="absolute -top-10 -right-10 w-48 h-48 bg-indigo-50 rounded-full opacity-50 transition-transform group-hover:scale-110"></div>
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-8">
+              <span className="p-4 bg-indigo-50 text-indigo-600 rounded-3xl group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </span>
+              <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50/50 px-4 py-1 rounded-full">Next Up</span>
             </div>
-          ) : (
-            <p className="text-slate-500 italic">No classes today. Enjoy your day!</p>
-          )}
+            {todaySchedule ? (
+              <>
+                <p className="text-3xl font-black text-slate-900 truncate tracking-tight">{todaySchedule.slots[0].subject}</p>
+                <p className="text-sm text-slate-400 font-bold uppercase mt-2 tracking-widest">{todaySchedule.slots[0].time}</p>
+              </>
+            ) : (
+              <p className="text-slate-400 font-black italic">Relax mode active.</p>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Today's Schedule List */}
+      {/* Grid Menu */}
       <section>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold text-slate-800">Today's Schedule</h2>
-          <button 
-            onClick={() => setActiveTab('timetable')}
-            className="text-sm text-blue-600 font-medium hover:underline"
-          >
-            Full Timetable
-          </button>
+        <div className="flex items-center gap-4 mb-8">
+          <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em]">Core Operations</h2>
+          <div className="flex-1 h-px bg-slate-100"></div>
         </div>
-        <div className="space-y-3">
-          {todaySchedule ? todaySchedule.slots.map((slot, idx) => (
-            <div key={idx} className="flex gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
-              <div className="w-16 flex flex-col items-center justify-center border-r border-slate-100 pr-4">
-                <span className="text-xs font-bold text-slate-400 text-center uppercase leading-tight">
-                  {slot.time.split(' - ')[0]}
-                </span>
-              </div>
-              <div>
-                <h4 className="font-semibold text-slate-800">{slot.subject}</h4>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                    slot.type === 'Theory' ? 'bg-indigo-100 text-indigo-600' : 'bg-orange-100 text-orange-600'
-                  }`}>
-                    {slot.type}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )) : (
-            <div className="p-8 text-center bg-white rounded-3xl border border-dashed border-slate-200 text-slate-400">
-              No classes scheduled for today.
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Quick Access Grid */}
-      <section>
-        <h2 className="text-lg font-bold text-slate-800 mb-4">Quick Access</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
           {[
-            { label: 'Notes', icon: '📘', tab: 'resources' },
-            { label: 'Papers', icon: '📝', tab: 'resources' },
-            { label: 'Subjects', icon: '📚', tab: 'subjects' },
-            { label: 'Calculator', icon: '🧮', tab: 'attendance' }
+            { label: 'Semester', icon: '💎', tab: 'resources' },
+            { label: 'Analyses', icon: '📊', tab: 'resources' },
+            { label: 'Curriculum', icon: '🧬', tab: 'subjects' },
+            { label: 'Estimator', icon: '⚡', tab: 'attendance' }
           ].map((item) => (
             <button
               key={item.label}
               onClick={() => setActiveTab(item.tab as any)}
-              className="flex flex-col items-center gap-2 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-95"
+              className="flex flex-col items-center gap-6 p-10 bg-white rounded-[3rem] border border-slate-50 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 transition-all group"
             >
-              <span className="text-2xl">{item.icon}</span>
-              <span className="text-xs font-semibold text-slate-700">{item.label}</span>
+              <span className="text-4xl group-hover:scale-125 transition-transform duration-500">{item.icon}</span>
+              <span className="text-[9px] font-black text-slate-800 uppercase tracking-[0.2em]">{item.label}</span>
             </button>
           ))}
         </div>

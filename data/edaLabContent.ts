@@ -1,147 +1,116 @@
+import { PageContent } from './dtiTheoryContent';
 
-import { Experiment } from './dbmsLabContent';
-
-export const EDA_LAB_EXPERIMENTS: Experiment[] = [
-  {
-    id: 'eda-exp1',
-    title: 'Experiment 01: NumPy & Pandas Basics',
-    description: 'Perform NumPy Array operations and loading datasets into Pandas DataFrames with row/column selection.',
-    content: [
-      {
-        subtitle: 'NumPy Basic Operations',
-        sql: `import numpy as np
-
-# Create Array
-arr = np.array([1, 2, 3, 4, 5])
-
-# Basic Operations
-arr_add = arr + 10
-arr_mean = np.mean(arr)
-arr_std = np.std(arr)
-
-print(f"Mean: {arr_mean}, Std Dev: {arr_std}")`,
-      },
-      {
-        subtitle: 'Pandas Loading & Selection',
-        sql: `import pandas as pd
-
-# Load dataset
-df = pd.read_csv('used_cars_data.csv')
-
-# Selecting Columns
-name_col = df['Name']
-subset = df[['Name', 'Fuel_Type']]
-
-# Row Filtering
-expensive_cars = df[df['Kilometers_Driven'] > 25000]
-
-# Selection by index (loc)
-specific_data = df.loc[0:3, ['Name', 'Price']]`,
-      }
-    ]
-  },
-  {
-    id: 'eda-exp2',
-    title: 'Experiment 02: Visual Aids for EDA',
-    description: 'Applying different visualization techniques using Matplotlib and Seaborn including Scatter, Line, and Bar plots.',
-    content: [
-      {
-        subtitle: 'Basic Plotting (Matplotlib)',
-        sql: `import matplotlib.pyplot as plt
-import pandas as pd
-
-data = {
-    "Year": [2017, 2018, 2019, 2020, 2021],
-    "Sales": [200, 300, 400, 350, 500]
+export interface LabManual {
+  id: string;
+  title: string;
+  pages: PageContent[];
 }
-df = pd.DataFrame(data)
 
-plt.plot(df["Year"], df["Sales"], marker='o')
-plt.title('Sales Over Years')
-plt.show()`,
-      },
-      {
-        subtitle: 'Seaborn Scatter Plot (Iris Dataset)',
-        sql: `import seaborn as sns
-import matplotlib.pyplot as plt
-
-iris = sns.load_dataset('iris')
-sns.scatterplot(data=iris, x='sepal_length', y='petal_length', hue='species')
-plt.title('Iris Dataset Visualization')
-plt.show()`,
-      }
-    ]
-  },
-  {
-    id: 'eda-exp3',
-    title: 'Experiment 03: Data Transformation',
-    description: 'Merging, Concatenating, Reshaping (Stack/Unstack), and handling missing data using fillna/dropna.',
-    content: [
-      {
-        subtitle: 'Merging DataFrames',
-        sql: `import pandas as pd
-
-df1 = pd.DataFrame({'ID': [1, 2], 'Name': ['Alice', 'Bob']})
-df2 = pd.DataFrame({'ID': [1, 2], 'Score': [85, 90]})
-
-merged = pd.merge(df1, df2, on='ID', how='inner')`,
-      },
-      {
-        subtitle: 'Handling Missing Values',
-        sql: `# Impute with mean
-df['Age'] = df['Age'].fillna(df['Age'].mean())
-
-# Drop duplicates
-df = df.drop_duplicates()`,
-      }
-    ]
-  },
-  {
-    id: 'eda-exp4',
-    title: 'Experiment 04: Descriptive Statistics',
-    description: 'Study of distribution techniques (Normal, Uniform, Binomial) and measures of Central Tendency.',
-    content: [
-      {
-        subtitle: 'Normal Distribution Plot',
-        sql: `import numpy as np
-import matplotlib.pyplot as plt
-
-data = np.random.normal(loc=0, scale=1, size=1000)
-plt.hist(data, bins=30, density=True, color='blue', alpha=0.6)
-plt.title('Normal Distribution')
-plt.show()`,
-      },
-      {
-        subtitle: 'Central Tendency & IQR',
-        sql: `mean_val = df['Age'].mean()
-median_val = df['Age'].median()
-mode_val = df['Age'].mode()[0]
-
-# Interquartile Range
-Q1, Q3 = np.percentile(df['Age'], [25, 75])
-IQR = Q3 - Q1`,
-      }
-    ]
-  },
-  {
-    id: 'eda-exp5',
-    title: 'Experiment 05: Model Evaluation',
-    description: 'Training a model using Train-Test split and evaluating performance with R2, MAE, and MSE metrics.',
-    content: [
-      {
-        subtitle: 'Linear Regression & Metrics',
-        sql: `from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score, mean_absolute_error
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
-model = LinearRegression()
-model.fit(X_train, y_train)
-
-y_pred = model.predict(X_test)
-print(f"R2 Score: {r2_score(y_test, y_pred)}")`,
-      }
-    ]
-  }
-];
+export const EDA_LAB_MANUAL: LabManual = {
+  id: 'eda-manual-70',
+  title: 'Exploratory Data Analysis using Python - Lab Manual',
+  pages: [
+    {
+      pageNumber: 1,
+      elements: [
+        { type: 'image-placeholder', content: 'NRI Logo & Institute Header (NRI INSTITUTE OF TECHNOLOGY - Autonomous)' },
+        { type: 'section-box', color: 'gray', content: 'DEPARTMENT OF CSE-DATA SCIENCE' },
+        { type: 'unit-header', content: 'Exploratory Data Analysis using Python' },
+        { type: 'title', content: 'LAB MANUAL' },
+        { type: 'text', content: 'SUBJECT CODE: 23A2244991\nREGULATION: NRIA23\nII B.TECH II SEMESTER', highlighted: true },
+        { type: 'sub-header', content: 'NRI INSTITUTE OF TECHNOLOGY (AUTONOMOUS)' },
+        { type: 'text', content: 'Approved by AICTE, New Delhi: Permanently Affiliated to JNTUK, Kakinada Accredited by NAAC with "A" GRADE...' }
+      ]
+    },
+    {
+      pageNumber: 2,
+      elements: [
+        { type: 'section-box', color: 'gray', content: 'Vision' },
+        { type: 'text', content: 'To emerge as a leading computer science and engineering department that provides high-quality education, research ability and innovative mind set capable of addressing industrial and societal concerns while maintaining ethical and social responsibilities.' },
+        { type: 'section-box', color: 'gray', content: 'Mission' },
+        { type: 'table', content: {
+          rows: [
+            ['M1', 'To equip students with fundamentals, experimental and research skills by fostering an academic atmosphere in which they achieve technical competencies.'],
+            ['M2', 'To make students professionally competitive, expose them to frontier knowledge discovery, industrial and social concerns by creating strong relationships with academia, R&D institutions and industry.'],
+            ['M3', 'To enrich students with global competencies, encourage creativity, innovative thinking, life- long learning, entrepreneurial mindset, teamwork, leadership, professional and social ethics.']
+          ]
+        }},
+        { type: 'section-box', color: 'gray', content: 'Program Outcomes (PEO’S)' },
+        { type: 'table', content: {
+          rows: [
+            ['PEO1', 'Graduates will have the fundamental domain knowledge and ability to expertise in Computer Science and Engineering.'],
+            ['PEO2', 'Graduates will have research skills for devising technically sound, economically feasible and socially acceptable innovative solutions to real-world challenges.'],
+            ['PEO3', 'Graduates will be excellent team leaders, communicators, and capable of adapting to new technology and upgrading their abilities on a continual basis.'],
+            ['PEO4', 'Graduates will be ethically and socially responsible solution providers and entrepreneurs in Computer Science and other engineering disciplines.']
+          ]
+        }}
+      ]
+    },
+    {
+      pageNumber: 3,
+      elements: [
+        { type: 'title', content: 'Program outcomes (POs)' },
+        { type: 'bullets', content: [
+          '1. Engineering knowledge: Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization to the solution of complex engineering problems.',
+          '2. Problem analysis: Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles.',
+          '3. Design/development of solutions: Design solutions for complex engineering problems and design system components or processes that meet the specified needs.',
+          '4. Conduct investigations of complex problems: Use research-based knowledge and research methods including design of experiments.',
+          '5. Modern tool usage: Create, select, and apply appropriate techniques, resources, and modern engineering and IT tools.',
+          '6. The engineer and society: Apply reasoning informed by the contextual knowledge to assess societal, health, safety, legal and cultural issues.',
+          '12. Life-long learning: Recognize the need for, and have the preparation and ability to engage in independent and life-long learning.'
+        ]}
+      ]
+    },
+    {
+      pageNumber: 7,
+      elements: [
+        { type: 'title', content: 'List of Experiments' },
+        { type: 'table', content: {
+          rows: [
+            ['S.No.', 'Name of the Experiment', 'Pg.No.'],
+            ['1', 'UNIT-I: Exploratory Data Analysis Fundamentals: Understanding data science, Significance of EDA, Steps in EDA...', '1-8'],
+            ['2', 'UNIT-II: Visual Aids for EDA: Line chart, Bar charts, Scatter plot using seaborn, Polar chart, Histogram...', '9-14']
+          ]
+        }}
+      ]
+    },
+    {
+      pageNumber: 10,
+      elements: [
+        { type: 'unit-header', content: 'UNIT-I' },
+        { type: 'section-box', color: 'orange', content: '1. Understanding Data Science' },
+        { type: 'text', content: 'Data Science is the interdisciplinary field that extracts insights and knowledge from structured and unstructured data. It combines computer science, statistics, and domain knowledge.' },
+        { type: 'bullets', content: [
+          'Data Collection: Gathering data from various sources.',
+          'Data Cleaning and Preprocessing: Ensuring data is clean, consistent, and usable.',
+          'Exploratory Data Analysis (EDA): Understanding the nature of the data before applying complex models.'
+        ]}
+      ]
+    },
+    {
+      pageNumber: 13,
+      elements: [
+        { type: 'title', content: 'Example Python Code for EDA' },
+        { type: 'diagram', content: 'Code: import pandas as pd\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\ndf = pd.read_csv("cars4u.csv")\nprint(df.head())\nsns.histplot(df["Price"])' }
+      ]
+    },
+    {
+      pageNumber: 44,
+      elements: [
+        { type: 'unit-header', content: 'UNIT-IV' },
+        { type: 'section-box', color: 'blue', content: '13. Study Distribution Techniques' },
+        { type: 'text', content: 'Uniform distribution is a type of distribution in which every outcome has an equal chance of occurring.' },
+        { type: 'diagram', content: 'import numpy as np\nimport matplotlib.pyplot as plt\n\ndata_uniform = np.random.uniform(low=0, high=10, size=1000)\nplt.hist(data_uniform, bins=30, density=True)' }
+      ]
+    },
+    {
+      pageNumber: 70,
+      elements: [
+        { type: 'title', content: 'Final Analysis' },
+        { type: 'section-box', color: 'green', content: '3. EDA on Wine Quality Dataset' },
+        { type: 'image-placeholder', content: 'Countplot visual showing distribution of Wine Quality' },
+        { type: 'text', content: 'Output Explanation: The count plot visualizes how wine quality is distributed, showing frequency across scores 3 through 8.' }
+      ]
+    }
+  ]
+};
