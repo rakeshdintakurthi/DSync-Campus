@@ -1,17 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, Section } from './types';
-import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import Attendance from './components/Attendance';
 import Timetable from './components/Timetable';
 import Subjects from './components/Subjects';
 import Resources from './components/Resources';
 import Navbar from './components/Navbar';
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'attendance' | 'timetable' | 'subjects' | 'resources'>('dashboard');
+  // Initialize with a default Data Science student profile to bypass login
+  const [user, setUser] = useState<User>({
+    rollNumber: 'DS-STUDENT',
+    department: 'CSE – DATA SCIENCE',
+    section: 'A',
+  });
+  
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'timetable' | 'subjects' | 'resources'>('dashboard');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('ds_user');
@@ -20,26 +24,14 @@ const App: React.FC = () => {
     }
   }, []);
 
-  const handleLogin = (u: User) => {
-    setUser(u);
-    localStorage.setItem('ds_user', JSON.stringify(u));
-  };
-
   const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('ds_user');
+    setActiveTab('dashboard');
   };
-
-  if (!user) {
-    return <Login onLogin={handleLogin} />;
-  }
 
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard user={user} setActiveTab={setActiveTab} />;
-      case 'attendance':
-        return <Attendance />;
       case 'timetable':
         return <Timetable userSection={user.section} />;
       case 'subjects':
@@ -63,9 +55,6 @@ const App: React.FC = () => {
              </div>
              <h1 className="text-xl font-black text-slate-800 tracking-tight">Student Hub</h1>
           </div>
-          <button onClick={handleLogout} className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm">
-             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-          </button>
         </header>
 
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
