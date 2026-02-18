@@ -6,26 +6,40 @@ import Timetable from './components/Timetable';
 import Subjects from './components/Subjects';
 import Resources from './components/Resources';
 import Navbar from './components/Navbar';
+import Login from './components/Login';
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<User>({
-    rollNumber: 'DS-STUDENT',
-    department: 'CSE – DATA SCIENCE',
-    section: 'A',
+  // We start with a default user but allow it to be null for logout functionality
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('ds_user');
+    if (saved) return JSON.parse(saved);
+    // Default user to satisfy "remove the login box" requirement on first load
+    return {
+      rollNumber: 'DS-STUDENT',
+      department: 'CSE – DATA SCIENCE',
+      section: 'A',
+    };
   });
   
   const [activeTab, setActiveTab] = useState<'dashboard' | 'timetable' | 'subjects' | 'resources'>('dashboard');
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem('ds_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
-
-  const handleLogout = () => {
+  const handleLogin = (newUser: User) => {
+    setUser(newUser);
+    localStorage.setItem('ds_user', JSON.stringify(newUser));
     setActiveTab('dashboard');
   };
+
+  const handleLogout = () => {
+    // Clear state and storage
+    localStorage.removeItem('ds_user');
+    setUser(null);
+    setActiveTab('dashboard');
+  };
+
+  // If user is null (after logout), show the login screen to allow switching identity
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
+  }
 
   const renderContent = () => {
     switch (activeTab) {

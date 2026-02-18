@@ -42,6 +42,13 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange, user, onLogout 
               )}
             </button>
           ))}
+          {/* Mobile Logout Button */}
+          <button
+            onClick={onLogout}
+            className="p-3 text-slate-500 hover:text-red-400 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+          </button>
         </nav>
       </div>
 
@@ -79,9 +86,10 @@ const Navbar: React.FC<NavbarProps> = ({ activeTab, onTabChange, user, onLogout 
 
         <button 
           onClick={onLogout}
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all duration-300"
+          className="w-12 h-12 rounded-2xl flex flex-col items-center justify-center text-slate-600 hover:text-red-400 hover:bg-red-400/10 transition-all duration-300 group"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+          <svg className="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+          <span className="text-[8px] font-black uppercase tracking-widest text-slate-700 group-hover:text-red-400">Exit</span>
         </button>
       </nav>
     </>
